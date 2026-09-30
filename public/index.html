@@ -191,5 +191,54 @@
 
     </div>
 
+    <script>
+        const searchButton = document.getElementById("searchButton");
+        const locationInput = document.getElementById("locationInput");
+
+        searchButton.addEventListener("click", async () => {
+            const location = locationInput.value.trim();
+
+            if (!location) {
+                alert("Masukkan nama lokasi terlebih dahulu!");
+                return;
+            }
+
+            try {
+                const response = await fetch(
+                    `/api/lokasi?kota=${encodeURIComponent(location)}`
+                );
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    alert(data.message);
+                    return;
+                }
+
+                document.getElementById("locationName").textContent =
+                    data.lokasi;
+
+                document.getElementById("country").textContent =
+                    data.negara;
+
+                document.getElementById("province").textContent =
+                    data.provinsi;
+
+                document.getElementById("district").textContent =
+                    data.kecamatan;
+
+                document.getElementById("longitude").textContent =
+                    data.longitude;
+
+                document.getElementById("latitude").textContent =
+                    data.latitude;
+
+            } catch (error) {
+                console.error(error);
+                alert("Gagal mengambil data lokasi.");
+            }
+        });
+    </script>
+
 </body>
 </html>
