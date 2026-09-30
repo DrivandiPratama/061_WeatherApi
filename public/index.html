@@ -3,22 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Location Finder</title>
+    <title>GeoLocation</title>
 
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
         }
 
         body {
+            font-family: Arial, sans-serif;
             min-height: 100vh;
-            background: linear-gradient(135deg, #0f172a, #1e3a8a);
+            background: linear-gradient(135deg, #0f172a, #1e3a5f);
             color: white;
-            padding: 40px 20px;
+            padding: 30px 20px;
         }
 
         .container {
@@ -32,7 +31,7 @@
         }
 
         .header h1 {
-            font-size: 38px;
+            font-size: 36px;
             margin-bottom: 10px;
         }
 
@@ -41,89 +40,115 @@
         }
 
         .identity {
-            text-align: center;
-            margin-top: 15px;
-            color: #cbd5e1;
-            font-size: 14px;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 15px 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .identity p {
+            margin: 5px 0;
         }
 
         .search-box {
             background: white;
-            padding: 20px;
-            border-radius: 15px;
-            display: flex;
-            gap: 10px;
+            padding: 25px;
+            border-radius: 20px;
             margin-bottom: 25px;
         }
 
-        .search-box input {
+        .search-box h2 {
+            color: #0f172a;
+            margin-bottom: 15px;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        #locationInput {
             flex: 1;
             padding: 14px;
-            border: 1px solid #cbd5e1;
+            border: 2px solid #dbeafe;
             border-radius: 10px;
             font-size: 16px;
             outline: none;
         }
 
-        .search-box button {
+        button {
             padding: 14px 25px;
             border: none;
             border-radius: 10px;
             background: #2563eb;
             color: white;
-            font-size: 16px;
+            font-weight: bold;
             cursor: pointer;
         }
 
-        .search-box button:hover {
+        button:hover {
             background: #1d4ed8;
         }
 
-        .result {
-            background: white;
-            color: #0f172a;
-            border-radius: 15px;
-            padding: 25px;
-        }
-
-        .result h2 {
+        #message {
+            text-align: center;
             margin-bottom: 20px;
         }
 
-        .info-grid {
+        .result-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 25px;
+        }
+
+        .result-card h2 {
+            margin-bottom: 10px;
+        }
+
+        #locationName {
+            color: #93c5fd;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .details {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 15px;
         }
 
-        .info-card {
-            background: #f1f5f9;
+        .detail {
+            background: rgba(0, 0, 0, 0.2);
             padding: 18px;
             border-radius: 12px;
         }
 
-        .info-card span {
+        .detail span {
             display: block;
-            color: #64748b;
+            color: #cbd5e1;
             font-size: 14px;
-            margin-bottom: 7px;
+            margin-bottom: 8px;
         }
 
-        .info-card strong {
+        .detail strong {
             font-size: 17px;
         }
 
+        footer {
+            text-align: center;
+            margin-top: 25px;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
         @media (max-width: 600px) {
-            .search-box {
+            .search-form {
                 flex-direction: column;
             }
 
-            .info-grid {
+            .details {
                 grid-template-columns: 1fr;
-            }
-
-            .header h1 {
-                font-size: 30px;
             }
         }
     </style>
@@ -131,114 +156,135 @@
 
 <body>
 
-    <div class="container">
+<div class="container">
 
-        <div class="header">
-            <h1>Location Finder</h1>
-            <p>Temukan informasi lokasi menggunakan MapTiler API</p>
+    <div class="header">
+        <h1>🌍 GeoLocation</h1>
+        <p>Mencari informasi lokasi menggunakan MapTiler API</p>
+    </div>
 
-            <div class="identity">
-                Nama: Drivandi Pratama | NIM: 20240140061
-            </div>
-        </div>
+    <div class="identity">
+        <p><strong>Nama:</strong> Drivandi Pratama</p>
+        <p><strong>NIM:</strong> 20240140061</p>
+    </div>
 
-        <div class="search-box">
+    <div class="search-box">
+        <h2>🔎 Cari Lokasi</h2>
+
+        <form class="search-form" id="searchForm">
             <input
                 type="text"
                 id="locationInput"
-                placeholder="Masukkan nama kota..."
+                placeholder="Contoh: Yogyakarta"
+                required
             >
 
-            <button id="searchButton">
-                Cari Lokasi
-            </button>
-        </div>
+            <button type="submit">Cari Lokasi</button>
+        </form>
+    </div>
 
-        <div class="result">
+    <p id="message"></p>
 
-            <h2 id="locationName">Hasil Lokasi</h2>
+    <div class="result-card">
 
-            <div class="info-grid">
+        <h2>📍 Detail Lokasi</h2>
 
-                <div class="info-card">
-                    <span>Negara</span>
-                    <strong id="country">-</strong>
-                </div>
+        <h3 id="locationName">Belum ada lokasi</h3>
 
-                <div class="info-card">
-                    <span>Provinsi</span>
-                    <strong id="province">-</strong>
-                </div>
+        <div class="details">
 
-                <div class="info-card">
-                    <span>Kecamatan</span>
-                    <strong id="district">-</strong>
-                </div>
+            <div class="detail">
+                <span>Negara</span>
+                <strong id="country">-</strong>
+            </div>
 
-                <div class="info-card">
-                    <span>Longitude</span>
-                    <strong id="longitude">-</strong>
-                </div>
+            <div class="detail">
+                <span>Provinsi</span>
+                <strong id="province">-</strong>
+            </div>
 
-                <div class="info-card">
-                    <span>Latitude</span>
-                    <strong id="latitude">-</strong>
-                </div>
+            <div class="detail">
+                <span>Kecamatan</span>
+                <strong id="district">-</strong>
+            </div>
 
+            <div class="detail">
+                <span>Longitude</span>
+                <strong id="longitude">-</strong>
+            </div>
+
+            <div class="detail">
+                <span>Latitude</span>
+                <strong id="latitude">-</strong>
             </div>
 
         </div>
-
     </div>
 
-    <script>
-        const searchButton = document.getElementById("searchButton");
-        const locationInput = document.getElementById("locationInput");
+    <footer>
+        Praktikum Pengembangan Web Service · MapTiler API
+    </footer>
 
-        searchButton.addEventListener("click", async () => {
-            const location = locationInput.value.trim();
+</div>
 
-            if (!location) {
-                alert("Masukkan nama lokasi terlebih dahulu!");
-                return;
+<script>
+
+    const searchForm = document.getElementById("searchForm");
+
+    searchForm.addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+        const location = document.getElementById("locationInput").value;
+
+        const message = document.getElementById("message");
+
+        message.textContent = "Sedang mencari lokasi...";
+
+        try {
+
+            const response = await fetch(
+                `/api/lokasi?kota=${encodeURIComponent(location)}`
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message);
             }
 
-            try {
-                const response = await fetch(
-                    `/api/lokasi?kota=${encodeURIComponent(location)}`
-                );
+            document.getElementById("locationName").textContent =
+                data.lokasi;
 
-                const data = await response.json();
+            document.getElementById("country").textContent =
+                data.negara;
 
-                if (!response.ok) {
-                    alert(data.message);
-                    return;
-                }
+            document.getElementById("province").textContent =
+                data.provinsi;
 
-                document.getElementById("locationName").textContent =
-                    data.lokasi;
+            document.getElementById("district").textContent =
+                data.kecamatan;
 
-                document.getElementById("country").textContent =
-                    data.negara;
+            document.getElementById("longitude").textContent =
+                data.longitude;
 
-                document.getElementById("province").textContent =
-                    data.provinsi;
+            document.getElementById("latitude").textContent =
+                data.latitude;
 
-                document.getElementById("district").textContent =
-                    data.kecamatan;
+            message.textContent = "Data lokasi berhasil ditemukan ✓";
 
-                document.getElementById("longitude").textContent =
-                    data.longitude;
+        } catch (error) {
 
-                document.getElementById("latitude").textContent =
-                    data.latitude;
+            console.error(error);
 
-            } catch (error) {
-                console.error(error);
-                alert("Gagal mengambil data lokasi.");
-            }
-        });
-    </script>
+            message.textContent =
+                "Gagal mengambil data lokasi.";
+
+        }
+
+    });
+
+</script>
 
 </body>
 </html>
